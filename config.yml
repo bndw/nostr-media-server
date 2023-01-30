@@ -1,0 +1,16 @@
+port: 9000
+api_path: http://localhost:9000/upload
+media_path: http://localhost:9000
+accepted_mimetypes:
+  - image/jpg
+  - image/png
+  - image/gif
+  - video/mp4
+storage_type: filesystem
+storage_config:
+  media_dir: ./files
+allow_violent_content: false
+allow_adult_content: false
+names:
+  alice: npub1xxx
+  bob: npub1yyy
