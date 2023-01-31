@@ -11,8 +11,8 @@ with a pluggabe storage interface to allow additional storage providers.
 - [x] Getting host info at https://<hostname>/.well-known/nostr.json
 - [x] Uploading media
 - [x] Getting media
-- [ ] Getting media: filename optional
-- [ ] Getting media: type optional
+- [x] Getting media: filename optional
+- [x] Getting media: type optional
 - [ ] Getting media: potential query params (size, aspect ratio)
 
 ### Quickstart

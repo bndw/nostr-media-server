@@ -13,6 +13,7 @@ import (
 
 const (
 	defaultMediaDir = "./files"
+	ondiskFilename  = "data"
 )
 
 func New(cfg map[string]string) (*Provider, error) {
@@ -40,6 +41,9 @@ func (p *Provider) Save(ctx context.Context, src io.Reader, opts storage.Options
 		return "", fmt.Errorf("Must provide filename")
 	}
 
+	// mediaPath is the filepath relative to the config.MediaPath.
+	mediaPath := filepath.Join(opts.Sha256, opts.Filename)
+
 	if err := os.MkdirAll(p.MediaDir, os.ModePerm); err != nil {
 		return "", fmt.Errorf("failed to make MediaDir: %w", err)
 	}
@@ -50,12 +54,11 @@ func (p *Provider) Save(ctx context.Context, src io.Reader, opts storage.Options
 			return "", fmt.Errorf("failed to make file dir: %w", err)
 		}
 	} else {
-		// TODO: We've seen this file before (sha matches)
-		// We're currently ignoring this and overwriting.
-		log.Printf("seen file %q before", targetDir)
+		// We already have this file.
+		return mediaPath, nil
 	}
 
-	fullPath := filepath.Join(targetDir, opts.Filename)
+	fullPath := filepath.Join(targetDir, ondiskFilename)
 	target, err := os.OpenFile(fullPath, os.O_WRONLY|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		return "", err
@@ -66,13 +69,10 @@ func (p *Provider) Save(ctx context.Context, src io.Reader, opts storage.Options
 		return "", err
 	}
 
-	// mediaPath is the filepath relative to the config.MediaPath.
-	mediaPath := filepath.Join(opts.Sha256, opts.Filename)
-
 	return mediaPath, nil
 }
 
 func (p *Provider) Get(ctx context.Context, sum, name string) (io.Reader, error) {
-	fileDir := filepath.Join(p.MediaDir, sum, name)
+	fileDir := filepath.Join(p.MediaDir, sum, ondiskFilename)
 	return os.Open(fileDir)
 }

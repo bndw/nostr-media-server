@@ -68,10 +68,23 @@ func TestGet(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Ensure we can read it from the expected location
-	f, err := store.Get(ctx, sum, filename)
-	assert.NoError(t, err)
+	{
+		f, err := store.Get(ctx, sum, filename)
+		assert.NoError(t, err)
 
-	b, err := ioutil.ReadAll(f)
-	assert.NoError(t, err)
-	assert.Equal(t, data, b)
+		b, err := ioutil.ReadAll(f)
+		assert.NoError(t, err)
+		assert.Equal(t, data, b)
+	}
+
+	// Ensure we can read it using a random filename
+	// (A file is uniquely identified by its hash)
+	{
+		f, err := store.Get(ctx, sum, "alternate.txt")
+		assert.NoError(t, err)
+
+		b, err := ioutil.ReadAll(f)
+		assert.NoError(t, err)
+		assert.Equal(t, data, b)
+	}
 }

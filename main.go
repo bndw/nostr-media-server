@@ -60,6 +60,7 @@ func main() {
 	r.Get("/.well-known/nostr.json", api.handleWellKnown)
 	r.Post("/upload", api.handleUpload)
 	r.Get("/{sum}/{name}", api.handleGetImage)
+	r.Get("/{sum}", api.handleGetImage)
 
 	port := fmt.Sprintf(":%d", cfg.Port)
 	log.Printf("listening on %v\n", port)
