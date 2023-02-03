@@ -9,6 +9,7 @@ accepted_mimetypes:
 storage_type: filesystem
 storage_config:
   media_dir: ./files
+max_upload_size_mb: 1
 allow_violent_content: false
 allow_adult_content: false
 names:

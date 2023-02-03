@@ -76,10 +76,9 @@ func (h *handlers) handleGetImage(w http.ResponseWriter, r *http.Request) {
 
 // handleUpload stores the provided media
 func (h *handlers) handleUpload(w http.ResponseWriter, r *http.Request) {
-	// TODO: Limit upload size to 1 MB, move to config.
-	r.Body = http.MaxBytesReader(w, r.Body, 1*1024*1024)
+	r.Body = http.MaxBytesReader(w, r.Body, h.Config.MaxUploadSizeMB*1024*1024)
 
-	fileName, fileBytes, err := getMedia(r)
+	fileName, fileBytes, err := h.getMedia(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -140,8 +139,8 @@ func (h *handlers) handleUpload(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-func getMedia(r *http.Request) (string, []byte, error) {
-	err := r.ParseMultipartForm(1 * 1024 * 1024) // 1 MB in memory
+func (h *handlers) getMedia(r *http.Request) (string, []byte, error) {
+	err := r.ParseMultipartForm(h.Config.MaxUploadSizeMB * 1024 * 1024)
 	if err != nil {
 		return "", nil, err
 	}
