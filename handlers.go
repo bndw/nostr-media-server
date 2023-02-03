@@ -57,6 +57,7 @@ func (h *handlers) handleGetImage(w http.ResponseWriter, r *http.Request) {
 
 	f, err := h.Store.Get(ctx, sum, name)
 	if err != nil {
+		log.Printf("err: store.Get: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -67,6 +68,7 @@ func (h *handlers) handleGetImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	downloadCounter.Inc()
 	w.Header().Set("Content-Type", http.DetectContentType(fileBytes))
 	w.Header().Set("Content-Length", strconv.Itoa(len(fileBytes)))
 	w.Write(fileBytes)
@@ -134,6 +136,7 @@ func (h *handlers) handleUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	uploadCounter.Inc()
 	w.Write(data)
 }
 

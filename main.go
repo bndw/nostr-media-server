@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/bndw/nostr-media-server/storage/file"
 )
@@ -56,11 +57,13 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(cors.AllowAll().Handler)
+	r.Use(metricsMiddleware)
 
 	r.Get("/.well-known/nostr.json", h.handleWellKnown)
 	r.Post("/upload", h.handleUpload)
 	r.Get("/{sum}/{name}", h.handleGetImage)
 	r.Get("/{sum}", h.handleGetImage)
+	r.Method(http.MethodGet, "/metrics", promhttp.Handler())
 
 	port := fmt.Sprintf(":%d", cfg.Port)
 	log.Printf("listening on %v\n", port)
