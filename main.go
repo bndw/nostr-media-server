@@ -48,7 +48,7 @@ func main() {
 		}
 	}
 
-	api := API{
+	h := handlers{
 		Config: cfg,
 		Store:  store,
 	}
@@ -57,10 +57,10 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(cors.AllowAll().Handler)
 
-	r.Get("/.well-known/nostr.json", api.handleWellKnown)
-	r.Post("/upload", api.handleUpload)
-	r.Get("/{sum}/{name}", api.handleGetImage)
-	r.Get("/{sum}", api.handleGetImage)
+	r.Get("/.well-known/nostr.json", h.handleWellKnown)
+	r.Post("/upload", h.handleUpload)
+	r.Get("/{sum}/{name}", h.handleGetImage)
+	r.Get("/{sum}", h.handleGetImage)
 
 	port := fmt.Sprintf(":%d", cfg.Port)
 	log.Printf("listening on %v\n", port)

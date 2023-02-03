@@ -17,13 +17,13 @@ import (
 	"github.com/bndw/nostr-media-server/storage"
 )
 
-type API struct {
+type handlers struct {
 	Config Config
 	Store  storageProvider
 }
 
 // handleWellKnown returns the nostr.json well-known payload.
-func (h *API) handleWellKnown(w http.ResponseWriter, r *http.Request) {
+func (h *handlers) handleWellKnown(w http.ResponseWriter, r *http.Request) {
 	data, err := json.Marshal(map[string]any{
 		"media": map[string]any{
 			"apiPath":           h.Config.APIPath,
@@ -48,7 +48,7 @@ func (h *API) handleWellKnown(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleGetImage fetches a stored image
-func (h *API) handleGetImage(w http.ResponseWriter, r *http.Request) {
+func (h *handlers) handleGetImage(w http.ResponseWriter, r *http.Request) {
 	var (
 		ctx  = r.Context()
 		sum  = chi.URLParam(r, "sum")
@@ -73,7 +73,7 @@ func (h *API) handleGetImage(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleUpload stores the provided media
-func (h *API) handleUpload(w http.ResponseWriter, r *http.Request) {
+func (h *handlers) handleUpload(w http.ResponseWriter, r *http.Request) {
 	// TODO: Limit upload size to 1 MB, move to config.
 	r.Body = http.MaxBytesReader(w, r.Body, 1*1024*1024)
 
