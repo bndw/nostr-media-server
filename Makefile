@@ -6,14 +6,17 @@ STORAGE_TYPE=filesystem
 STORAGE_CONFIG="media_dir:./files"
 NAMES=alice:npub1xxx,bob:npub1yyy
 
+.PHONY: build
 build:
 	go build -o ./bin/nostr-media-server .
 
 # run runs the server with a config file
+.PHONY: run
 run: build
 	./bin/nostr-media-server -config config.yml
 
 # run-env runs the server with config from the environment
+.PHONY: run-env
 run-env: build
 	API_PATH=$(API_PATH) \
 	MEDIA_PATH=$(MEDIA_PATH) \
@@ -22,3 +25,7 @@ run-env: build
 	STORAGE_CONFIG=$(STORAGE_CONFIG) \
 	NAMES=$(NAMES) \
 	./bin/nostr-media-server
+
+.PHONY: test
+test:
+	go test -v ./...
