@@ -1,30 +1,29 @@
-CONFIG_PATH=config.yml
-API_PATH=http://localhost:9000/upload
-MEDIA_PATH=http://localhost:9000
-ACCEPTED_MIMETYPES=image/jpg,image/png,image/gif
-STORAGE_TYPE=filesystem
-STORAGE_CONFIG="media_dir:./files"
-NAMES=alice:npub1xxx,bob:npub1yyy
+REPO ?= bndw/nostr-media-server
+GITSHA=$(shell git rev-parse --short HEAD)
+TAG_COMMIT=$(REPO):$(GITSHA)
+TAG_LATEST=$(REPO):latest
 
 .PHONY: build
 build:
 	go build -o ./bin/nostr-media-server .
+
+.PHONY: docker
+docker:
+	@docker build -t $(TAG_LATEST) .
 
 # run runs the server with a config file
 .PHONY: run
 run: build
 	./bin/nostr-media-server -config config.yml
 
-# run-env runs the server with config from the environment
-.PHONY: run-env
-run-env: build
-	API_PATH=$(API_PATH) \
-	MEDIA_PATH=$(MEDIA_PATH) \
-	ACCEPTED_MIMETYPES=$(ACCEPTED_MIMETYPES) \
-	STORAGE_TYPE=$(STORAGE_TYPE) \
-	STORAGE_CONFIG=$(STORAGE_CONFIG) \
-	NAMES=$(NAMES) \
-	./bin/nostr-media-server
+run-docker:
+	@docker run --rm -p 8080:80 $(TAG_LATEST)
+
+.PHONY: publish
+publish:
+	docker push $(TAG_LATEST)
+	@docker tag $(TAG_LATEST) $(TAG_COMMIT)
+	docker push $(TAG_COMMIT)
 
 .PHONY: test
 test:
