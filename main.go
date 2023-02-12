@@ -60,9 +60,9 @@ func main() {
 	r.Use(metricsMiddleware)
 
 	r.Get("/.well-known/nostr.json", h.handleWellKnown)
-	r.Post("/upload", h.handleUpload)
-	r.Get("/{sum}/{name}", h.handleGetImage)
-	r.Get("/{sum}", h.handleGetImage)
+	r.Post("/upload", h.handleUploadMedia)
+	r.Get("/{sum}/{name}", h.handleGetMedia)
+	r.Get("/{sum}", h.handleGetMedia)
 	r.Method(http.MethodGet, "/metrics", promhttp.Handler())
 
 	port := fmt.Sprintf(":%d", cfg.Port)

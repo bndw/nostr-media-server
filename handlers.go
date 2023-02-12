@@ -47,8 +47,8 @@ func (h *handlers) handleWellKnown(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-// handleGetImage fetches a stored image
-func (h *handlers) handleGetImage(w http.ResponseWriter, r *http.Request) {
+// handleGetMedia fetches stored media
+func (h *handlers) handleGetMedia(w http.ResponseWriter, r *http.Request) {
 	var (
 		ctx  = r.Context()
 		sum  = chi.URLParam(r, "sum")
@@ -74,8 +74,8 @@ func (h *handlers) handleGetImage(w http.ResponseWriter, r *http.Request) {
 	w.Write(fileBytes)
 }
 
-// handleUpload stores the provided media
-func (h *handlers) handleUpload(w http.ResponseWriter, r *http.Request) {
+// handleUploadMedia stores the provided media
+func (h *handlers) handleUploadMedia(w http.ResponseWriter, r *http.Request) {
 	r.Body = http.MaxBytesReader(w, r.Body, h.Config.MaxUploadSizeMB*1024*1024)
 
 	fileName, fileBytes, err := h.getMedia(r)
