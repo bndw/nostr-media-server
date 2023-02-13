@@ -12,8 +12,7 @@ RUN go build -o /bin/nostr-media-server .
 
 FROM alpine:latest
 
-WORKDIR /root/
-COPY --from=builder /bin/nostr-media-server .
+COPY --from=builder /bin/nostr-media-server /bin/
 
 EXPOSE 80
-CMD ["./nostr-media-server"]
+ENTRYPOINT ["/bin/nostr-media-server"]
